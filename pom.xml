@@ -24,11 +24,23 @@
 
 
     <dependencies>
+
+        <!-- DB provider -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
             <version>2.9.3</version>
         </dependency>
+
+        <!--  Testing -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8</version>
+            <scope>test</scope>
+            <!--<classifier>jdk17</classifier>-->
+        </dependency>
+
     </dependencies>
 
 

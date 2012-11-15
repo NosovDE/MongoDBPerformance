@@ -24,11 +24,16 @@ public class QuickTour {
         morphia.map(Hotel.class).map(Address.class);
         Datastore ds = morphia.createDatastore(mongo, "my_database");
 
+        //at application start
+        //map classes before calling with morphia map* methods
+        ds.ensureIndexes(); //creates indexes from @Index annotations in your entities
+        ds.ensureCaps(); //creates capped collections from @Entity
+
 
         // Now we can use the Datastore instance to save classes with MongoDB. To save a Hotel in Mongo:
         Hotel hotel = new Hotel();
         hotel.setName("My Hotel");
-        hotel.setStars(4);
+        hotel.setStars((int) (Math.random() * 10));
 
         Address address = new Address();
         address.setStreet("123 Some street");
@@ -39,6 +44,7 @@ public class QuickTour {
         //set address
         hotel.setAddress(address);
 
+        System.out.println("Create hotel = " + hotel);
         // Save the POJO
         ds.save(hotel);
 
@@ -55,8 +61,10 @@ public class QuickTour {
         //Using a query is just as simple as loading Hotel:
         // it is easy to get four-star hotels.
         List<Hotel> fourStarHotels = ds.find(Hotel.class, "stars >=", 4).asList();
+        System.out.println("fourStarHotels = " + fourStarHotels);
         //or
         fourStarHotels = ds.find(Hotel.class).field("stars").greaterThanOrEq(4).asList();
+        System.out.println("fourStarHotels = " + fourStarHotels);
 
 
     }

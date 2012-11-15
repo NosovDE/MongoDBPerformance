@@ -49,7 +49,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
 
@@ -126,7 +126,7 @@
 
 
         <dependency>
-            <groupId>com.google.code</groupId>
+            <groupId>com.google.code.morphia</groupId>
             <artifactId>morphia</artifactId>
             <version>0.99</version>
         </dependency>

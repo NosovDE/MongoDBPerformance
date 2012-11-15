@@ -124,14 +124,20 @@
         </dependency>
 
 
-
+        <!-- ORM MongoDB -->
         <dependency>
             <groupId>com.google.code.morphia</groupId>
             <artifactId>morphia</artifactId>
             <version>0.99</version>
         </dependency>
 
+
+
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.0</version>
+        </dependency>
+
     </dependencies>
-
-
 </project>

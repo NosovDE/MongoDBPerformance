@@ -2,6 +2,8 @@ package ru.mongo;
 
 
 import com.mongodb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -18,6 +20,8 @@ import java.net.UnknownHostException;
 
 public class InsertTest {
 
+    final static Logger logger = LoggerFactory.getLogger(InsertTest.class);
+
     private Mongo mongo = null;
     private DB db = null;
 
@@ -27,14 +31,16 @@ public class InsertTest {
             // соединимся с базой
             mongo = new Mongo("10.3.0.134", 27017);
             db = mongo.getDB("mydb");
-        } catch (UnknownHostException e) {
+            logger.info("Start suite!!!");
 
+        } catch (UnknownHostException e) {
+            logger.error("UnknownHostException e " + e, e);
         }
 
     }
 
 
-    @Test
+    @Test(enabled = false)
     public void insert() {
         // откуда хотим
         final DBCollection coll = db.getCollection("persons");

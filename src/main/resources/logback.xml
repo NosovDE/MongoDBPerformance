@@ -13,9 +13,9 @@
             <onMatch>DENY</onMatch>
             <onMismatch>ACCEPT</onMismatch>
         </filter>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>${log.format}</Pattern>
-        </layout>
+        <encoder class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%5p [%d][%thread][%logger{0}] %msg%n</pattern>
+        </encoder>
         <param name="target" value="System.out"/>
     </appender>
 
@@ -30,33 +30,33 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>${log.format}</Pattern>
-        </layout>
+        <encoder>
+            <pattern>%5p [%d][%thread][%logger{0}] %msg%n</pattern>
+        </encoder>
         <param name="target" value="System.err"/>
     </appender>
 
-    <appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">
-        <layout class="ch.qos.logback.classic.html.HTMLLayout">
-            <pattern>%relative%thread%mdc%level%class%msg</pattern>
-        </layout>
-        <From>inbox2017@gmail.com</From>
-        <SMTPHost>192.168.0.247</SMTPHost>
-        <Subject>LastEvent: %class - %msg</Subject>
-        <To>inbox2017@gmail.com</To>
-    </appender>
+    <!--<appender name="SMTP" class="ch.qos.logback.classic.net.SMTPAppender">-->
+        <!--<layout class="ch.qos.logback.classic.html.HTMLLayout">-->
+            <!--<pattern>%relative%thread%mdc%level%class%msg</pattern>-->
+        <!--</layout>-->
+        <!--<From>inbox2017@gmail.com</From>-->
+        <!--<SMTPHost>192.168.0.247</SMTPHost>-->
+        <!--<Subject>LastEvent: %class - %msg</Subject>-->
+        <!--<To>inbox2017@gmail.com</To>-->
+    <!--</appender>-->
 
     <appender name="EXCEPTIONS" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
             <evaluator>
-                <expression>throwable != null</expression>
+                <expression>return throwable != null;</expression>
             </evaluator>
             <OnMismatch>DENY</OnMismatch>
             <OnMatch>ACCEPT</OnMatch>
         </filter>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${mongo.root}/logs/exceptions/exceptions.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
+            <FileNamePattern>/tmp/logs/exceptions/exceptions.%d{yyyy-MM-dd}.%i.log.gz</FileNamePattern>
             <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <MaxFileSize>10485760</MaxFileSize>
             </TimeBasedFileNamingAndTriggeringPolicy>
@@ -65,13 +65,39 @@
             <MaxHistory>365</MaxHistory>
         </rollingPolicy>
 
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>${log.format}</Pattern>
-        </layout>
+        <encoder>
+            <pattern>%5p [%d][%thread][%logger{0}] %msg%n</pattern>
+        </encoder>
     </appender>
 
 
-    <root level="${log.level}">
+    <appender name="TMIS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/tmp/logs/tmis-core/core.log</file>
+        <encoder>
+            <pattern>%5p [%d][%thread][%logger{0}] %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>/tmp/logs/tmis-core/core.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <!-- or whenever the file size reaches 100MB -->
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+    <logger name="ru" level="INFO" additivity="false">
+        <appender-ref ref="TMIS"/>
+        <appender-ref ref="STDOUT_ERROR"/>
+        <appender-ref ref="EXCEPTIONS"/>
+    </logger>
+
+
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="STDOUT_ERROR"/>
         <appender-ref ref="EXCEPTIONS"/>

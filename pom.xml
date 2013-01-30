@@ -23,7 +23,7 @@
         <mongo.root>/opt/mongoDBPerformance/</mongo.root>
 
         <log.level>INFO</log.level>
-        <logback.version>0.9.18</logback.version>
+        <logback.version>1.0.9</logback.version>
         <log.root>logs/</log.root>
         <log.format>%5p [%d][%thread][%logger{0}] %msg%n</log.format>
     </properties>
@@ -123,6 +123,13 @@
             <version>${logback.version}</version>
         </dependency>
 
+        <!-- The org.codehaus.janino:commons-compiler:2.6.1 dependency -->
+        <!-- will be automatically pulled in by Maven's transitivity rules -->
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <version>2.6.1</version>
+        </dependency>
 
         <!-- ORM MongoDB -->
         <dependency>

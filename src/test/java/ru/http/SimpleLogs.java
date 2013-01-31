@@ -1,5 +1,8 @@
 package ru.http;
 
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.testng.annotations.Test;
 
 import java.io.BufferedReader;
@@ -25,19 +28,23 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public class SimpleLogs {
 
+    public static final int ROWS = 10000;
+    public static final int THREADS = 100;
+
     @Test(enabled = true)
     public void test() throws IOException {
 
 
-        for (int n = 0; n < 10; n++) {
+        for (int n = 0; n < THREADS; n++) {
             final int num = n;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    for (int i = 0; i < 1000000; i++) {
+                    long begin = System.currentTimeMillis();
+                    for (int i = 0; i < ROWS; i++) {
                         post(num);
                     }
-                    System.out.println("Complete: " + num);
+                    System.out.println("Complete: " + num + " thread. Time: " + (System.currentTimeMillis() - begin) / 1000 + " sec for " + ROWS + " row(s)");
                 }
             }).start();
         }
@@ -47,8 +54,13 @@ public class SimpleLogs {
     }
 
     private void post(int name) {
-        HttpClient client = new DefaultHttpClient();
+        // set the connection timeout value to 30 seconds (30000 milliseconds)
+        final HttpParams httpParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParams, 60000);
+
+        HttpClient client = new DefaultHttpClient(httpParams);
         HttpPost post = new HttpPost("http://10.2.0.182/api/entry/");
+
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(4);
             nameValuePairs.add(
@@ -59,14 +71,14 @@ public class SimpleLogs {
             nameValuePairs.add(new BasicNameValuePair("level", "info"));
             nameValuePairs.add(new BasicNameValuePair("tags", "[\"me\", \"java\"]"));
 
-           // System.out.println("nameValuePairs = " + nameValuePairs);
+            // System.out.println("nameValuePairs = " + nameValuePairs);
             post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
             HttpResponse response = client.execute(post);
             BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
             String line = "";
             while ((line = rd.readLine()) != null) {
-              //  System.out.println(line);
+                //  System.out.println(line);
             }
 
         } catch (IOException e) {
